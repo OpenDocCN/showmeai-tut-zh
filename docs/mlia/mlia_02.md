@@ -51,7 +51,7 @@
     *   相关重点知识请查看 [**AI 建模工具速查 | OpenCV 使用指南**](http://www.showmeai.tech/article-detail/112)
 *   imutils：图像处理/计算机视觉库。
 
-```
+```py
 可以采用 pip 安装，命令如下：
 $ pip install numpy
 $ pip install pillow
@@ -149,7 +149,7 @@ $ pip install --upgrade imutils
 
 我们构建如下的代码文件目录，包含四个代码文件和一个`3scenes`图像文件夹(内含三场景数据集)，iris 数据集无需另外存储，直接采用`scikit-learn`库载入即可。
 
-```
+```py
 ├── 3scenes
 │   ├── coast [360 entries]
 │   ├── forest [328 entries]
@@ -164,7 +164,7 @@ $ pip install --upgrade imutils
 
 首先实现`iris_classifier`，我们这里直接使用 sklearn 的机器学习算法来对`iris`数据集进行分类。
 
-```
+```py
 # 导入需要的库
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -201,7 +201,7 @@ models = {
 
 接着就是载入数据部分：
 
-```
+```py
 print("加载数据中...")
 dataset = load_iris()
 trainX, testX, trainY, testY = train_test_split(dataset.data, dataset.target, random_state=3, test_size=0.2) 
@@ -211,7 +211,7 @@ trainX, testX, trainY, testY = train_test_split(dataset.data, dataset.target, ra
 
 最后就是训练模型和预测部分：
 
-```
+```py
 # 训练模型
 print("应用 '{}' 模型建模...".format(args["model"]))
 model = models[args["model"]]
@@ -229,7 +229,7 @@ print(classification_report(testY, predictions, target_names=dataset.target_name
 
 类似的过程对三场景图像数据集构建代码`image_classifier.py`：
 
-```
+```py
 # 导入工具库
 from sklearn.preprocessing import LabelEncoder
 from PIL import Image
@@ -242,7 +242,7 @@ import os
 
 对于图像数据，如果直接采用原始像素信息输入模型中，大部分的机器学习算法效果都很不理想，所以这里采用特征提取方法，主要是统计图像颜色通道的均值和标准差信息，总共是`RGB`3 个通道，每个通道各计算均值和标准差，然后结合在一起，得到一个六维的特征，函数如下所示：
 
-```
+```py
 def extract_color_stats(image):
     '''
     将图片分成 RGB 三通道，然后分别计算每个通道的均值和标准差，然后返回
@@ -257,7 +257,7 @@ def extract_color_stats(image):
 
 然后同样会定义一个`models`字典，代码一样，这里就不贴出来了，然后图像载入部分的代码如下：
 
-```
+```py
 # 加载数据并提取特征
 print("抽取图像特征中...")
 imagePaths = paths.list_images(args['dataset'])
@@ -287,7 +287,7 @@ trainX, testX, trainY, testY = train_test_split(data, labels, test_size=0.2)
 
 接着是相同的训练模型和预测的代码，和前面的分类器一样。完整版代码如下：
 
-```
+```py
 # 导入工具库
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -384,7 +384,7 @@ K-Nearest Neighbors 分类器最简单的分类算法之一。该算法依赖于
 
 这里我们先运行下`image_classifier.py`，调用默认的模型`knn`，看下`KNN`在`iris`数据集上的实验结果，如下所示：
 
-```
+```py
 $ !python iris_classifier.py --model knn
 加载数据中...
 应用 'knn' 模型建模...
@@ -404,7 +404,7 @@ weighted avg       0.93      0.93      0.93        30
 
 接着是在三场景图片数据集上的实验结果：
 
-```
+```py
 $ !python image_classifier.py --model knn
 抽取图像特征中...
 应用 'knn' 模型建模...
@@ -432,7 +432,7 @@ ps：实际上，运行这个算法，不同次数会有不同的结果，其主
 
 分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model naive_bayes
 加载数据中...
 应用 'naive_bayes' 模型建模...
@@ -448,7 +448,7 @@ $ !python iris_classifier.py --model naive_bayes
 weighted avg       0.98      0.97      0.97        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model naive_bayes
 抽取图像特征中...
 应用 'naive_bayes' 模型建模...
@@ -477,7 +477,7 @@ weighted avg       0.66      0.65      0.64       237
 
 分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model logit
 加载数据中...
 应用 'logit' 模型建模...
@@ -493,7 +493,7 @@ $ !python iris_classifier.py --model logit
 weighted avg       0.98      0.97      0.97        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model logit
 抽取图像特征中...
 应用 'logit' 模型建模...
@@ -519,7 +519,7 @@ weighted avg       0.69      0.70      0.69       237
 
 分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model svm
 加载数据中...
 应用 'svm' 模型建模...
@@ -535,7 +535,7 @@ $ !python iris_classifier.py --model svm
 weighted avg       0.98      0.97      0.97        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model svm
 抽取图像特征中...
 应用 'svm' 模型建模...
@@ -560,7 +560,7 @@ $ !python image_classifier.py --model svm
 
 分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model decision_tree
 加载数据中...
 应用 'decision_tree' 模型建模...
@@ -576,7 +576,7 @@ $ !python iris_classifier.py --model decision_tree
 weighted avg       0.95      0.95      0.95        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model decision_tree
 抽取图像特征中...
 应用 'decision_tree' 模型建模...
@@ -602,7 +602,7 @@ weighted avg       0.74      0.74      0.74       237
 
 分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model random_forest
 加载数据中...
 应用 'random_forest' 模型建模...
@@ -618,7 +618,7 @@ $ !python iris_classifier.py --model random_forest
 weighted avg       0.96      0.95      0.95        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model random_forest
 加载数据中...
 应用 'random_forest' 模型建模...
@@ -644,7 +644,7 @@ weighted avg       0.84      0.83      0.83       237
 
 最后是多层感知机算法，分别测试两个数据集，结果如下：
 
-```
+```py
 $ !python iris_classifier.py --model mlp
 加载数据中...
 应用 'mlp' 模型建模...
@@ -660,7 +660,7 @@ $ !python iris_classifier.py --model mlp
 weighted avg       0.98      0.97      0.97        38 
 ```
 
-```
+```py
 $ !python image_classifier.py --model mlp
 抽取图像特征中...
 应用 'mlp' 模型建模...
@@ -686,7 +686,7 @@ weighted avg       0.81      0.80      0.80       237
 
 首先是`nn_iris.py`的实现，同样首先是导入库和数据的处理：
 
-```
+```py
 # 导入工具库
 from keras.models import Sequential
 from keras.layers.core import Dense
@@ -712,7 +712,7 @@ testY = lb.transform(testY)
 
 接着就是搭建网络模型的结构和训练、预测代码：
 
-```
+```py
 # 利用 Keras 定义网络模型
 model = Sequential()
 model.add(Dense(3, input_shape=(4,), activation="sigmoid"))
@@ -735,7 +735,7 @@ print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), ta
 
 完整版代码如下：
 
-```
+```py
 # 加载工具库
 from keras.models import Sequential
 from keras.layers.core import Dense
@@ -776,7 +776,7 @@ print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), ta
 
 直接运行命令`python nn_iris.py`，输出的结果如下：
 
-```
+```py
 $ python nn_iris.py 
 Using TensorFlow backend.
 加载数据中...
@@ -816,7 +816,7 @@ avg / total       1.00      1.00      1.00        38
 
 同样首先是导入必须的库函数：
 
-```
+```py
 # 导入工具库
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D
@@ -845,7 +845,7 @@ args = vars(ap.parse_args())
 
 然后是加载数据和划分训练集和测试集，对于加载数据，这里直接采用原始图像像素数据，只需要对图像数据做统一尺寸的调整，这里是统一调整为 32×32，并做归一化到`[0,1]`的范围。
 
-```
+```py
 # 加载数据并提取特征
 print("抽取图像特征中...")
 imagePaths = paths.list_images(args['dataset'])
@@ -873,7 +873,7 @@ labels = lb.fit_transform(labels)
 
 接着定义了一个 4 层的`CNN`网络结构，包含 3 层卷积层和最后一层输出层，优化算法采用的是 Adam 而不是`SGD`。代码如下所示：
 
-```
+```py
 # 定义 CNN 网络模型结构
 model = Sequential()
 model.add(Conv2D(8, (3, 3), padding="same", input_shape=(32, 32, 3)))
@@ -905,7 +905,7 @@ print(classification_report(testY.argmax(axis=1),
 
 运行命令`python basic_cnn.py`，输出结果如下：
 
-```
+```py
 $ python basic_cnn.py 
 Using TensorFlow backend.
 加载图像数据...

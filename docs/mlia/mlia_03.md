@@ -40,13 +40,13 @@ SKLearn 的快速使用方法也推荐大家查看[ShowMeAI](http://www.showmeai
 
 安装 SKLearn 非常简单，命令行窗口中输入命令：
 
-```
+```py
 pip install scikit-learn 
 ```
 
 我们也可以使用清华镜像源安装，通常速度会更快一些：
 
-```
+```py
 pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple 
 ```
 
@@ -60,7 +60,7 @@ pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 ![](img/09883eaa677d01bda41a5c0ed99bd8f2.png)
 
-```
+```py
 #鸢尾花数据集
 from sklearn.datasets import load_iris
 #乳腺癌数据集
@@ -75,7 +75,7 @@ from sklearn.datasets import load_boston
 
 ![](img/3af9ade57e1c701bed8ebab2b44fa08f.png)
 
-```
+```py
 #拆分数据集
 from sklearn.model_selection import train_test_split
 #数据缩放
@@ -88,7 +88,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 ![](img/0e60c989d4ae8fa32b2650fa858d893b.png)
 
-```
+```py
 from sklearn.feature_extraction import DictVectorizer
 v = DictVectorizer(sparse=False)
 D = [{'foo': 1, 'bar': 2}, {'foo': 3, 'baz': 1}]
@@ -101,7 +101,7 @@ X = v.fit_transform(D)
 
 ![](img/0ea58fec6412d73055a401c821ace084.png)
 
-```
+```py
 from sklearn.datasets import load_digits
 from sklearn.feature_selection import SelectKBest, chi2
 X, y = load_digits(return_X_y=True)
@@ -115,7 +115,7 @@ X_new = SelectKBest(chi2, k=20).fit_transform(X, y)
 
 ![](img/7a78d5373f40f9f7b88d42fc93155e09.png)
 
-```
+```py
 #KNN 模型
 from sklearn.neighbors import KNeighborsClassifier
 #决策树
@@ -130,7 +130,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 ![](img/8d37503f6474c7bb94f969e94fb7dd92.png)
 
-```
+```py
 #拟合训练集
 knn.fit(X_train,y_train)
 #预测
@@ -143,7 +143,7 @@ y_pred=knn.predict(X_test)
 
 ![](img/e5425ef17ab82dad7cdf3bde0720f435.png)
 
-```
+```py
 #求精度
 knn.score(X_test,y_test)
 #绘制混淆矩阵
@@ -156,7 +156,7 @@ from sklearn.metrics import roc_curve,roc_auc_score
 
 典型的一个机器学习建模应用流程遵循【数据准备】【数据预处理】【特征工程】【建模与评估】【模型优化】这样的一些流程环节。
 
-```
+```py
 # 加载数据
 import numpy as np
 import urllib

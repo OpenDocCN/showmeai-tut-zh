@@ -94,13 +94,13 @@ Featuretools 实际上就是提供了一个框架让我们可以方便快速的�
 
 大家可以在命令行使用 pip 轻松安装 Featuretools。
 
-```
+```py
 pip install featuretools 
 ```
 
 ## 6.2 导入依赖工具库及数据
 
-```
+```py
 import featuretools as ft
 import numpy as np
 import pandas as pd
@@ -113,7 +113,7 @@ test = pd.read_csv("test.csv")
 
 我们先从数据中提取出目标字段和特征字段，如下：
 
-```
+```py
 # saving identifiers
 test_Item_Identifier = test['Item_Identifier']
 test_Outlet_Identifier = test['Outlet_Identifier']
@@ -123,13 +123,13 @@ train.drop(['Item_Outlet_Sales'], axis=1, inplace=True)
 
 接着，我们合并训练集和测试集，以完成统一而一致的数据处理变换。
 
-```
+```py
 combi = train.append(test, ignore_index=True) 
 ```
 
 我们查看一下数据集的缺失值情况。
 
-```
+```py
 combi.isnull().sum() 
 ```
 
@@ -137,7 +137,7 @@ combi.isnull().sum()
 
 我们发现字段`Item_Weight`和`Outlet_size`中有非常多的缺失值，先做一个快速处理：
 
-```
+```py
 # 缺失值处理
 combi['Item_Weight'].fillna(combi['Item_Weight'].mean(), inplace = True)
 combi['Outlet_Size'].fillna("missing", inplace = True) 
@@ -147,7 +147,7 @@ combi['Outlet_Size'].fillna("missing", inplace = True)
 
 我们只做一点简单的数据预处理，这样后续可以更充分直观地展示 Featuretools 的功能。
 
-```
+```py
 combi['Item_Fat_Content'].value_counts() 
 ```
 
@@ -155,7 +155,7 @@ combi['Item_Fat_Content'].value_counts()
 
 我们发现`Item_Fat_Content`只包含两个类别：「低脂肪」和「常规」(虽然在字段取值上有多种，但其只是格式差异)，这里我们对其进行二值化变换。
 
-```
+```py
 # 二值编码
 fat_content_dict = {'Low Fat':0, 'Regular':1, 'LF':0, 'reg':1, 'low fat':0}
 
@@ -166,7 +166,7 @@ combi['Item_Fat_Content'] = combi['Item_Fat_Content'].replace(fat_content_dict, 
 
 下面我们使用 Featuretools 来实现自动化特征工程。首先我们将「商品」和「门店」信息组合，构建一个数据唯一 ID。
 
-```
+```py
 combi['id'] = combi['Item_Identifier'] + combi['Outlet_Identifier']
 combi.drop(['Item_Identifier'], axis=1, inplace=True) 
 ```
@@ -175,7 +175,7 @@ combi.drop(['Item_Identifier'], axis=1, inplace=True)
 
 接下来我们创建一个特征`EntitySet`，它是一种包含多个数据框及其之间关系的结构。
 
-```
+```py
 # 构建实体集合 es
 es = ft.EntitySet(id = 'sales')
 
@@ -185,7 +185,7 @@ es.add_dataframe(dataframe_name = 'bigmart', dataframe = combi, index = 'id')
 
 下面我们将使用深度特征综合(Deep Feature Synthesis)自动创建新特征。
 
-```
+```py
 trans_primitives=['add_numeric', 'subtract_numeric', 'multiply_numeric', 'divide_numeric'] # 2 列相加减乘除来生成新特征
 agg_primitives=['sum', 'median','mean']
 
@@ -211,7 +211,7 @@ feature_matrix, feature_names = ft.dfs(entityset=es,
 
 让我们来看看这些新构造的特征：
 
-```
+```py
 feature_matrix.columns 
 ```
 
@@ -221,7 +221,7 @@ feature_matrix.columns
 
 我们查看一下`feature_matrix`的前几行。
 
-```
+```py
 feature_matrix.head() 
 ```
 
@@ -229,7 +229,7 @@ feature_matrix.head()
 
 我们对这个 Dataframe 做一点小调整，我们根据 combi 数据框中的 id 变量对其进行排序。
 
-```
+```py
 feature_matrix = feature_matrix.reindex(index=combi['id'])
 feature_matrix = feature_matrix.reset_index() 
 ```
@@ -238,7 +238,7 @@ feature_matrix = feature_matrix.reset_index()
 
 我们还可以通过以下代码来对其构建出来的特征做解释，比如我们要解释第 20 个特征是如何得到的。
 
-```
+```py
 ft.graph_feature(feature_names[20]) 
 ```
 
@@ -250,14 +250,14 @@ ft.graph_feature(feature_names[20])
 
 你可以阅读[ShowMeAI](http://www.showmeai.tech/)的文章 [**图解机器学习 | LightGBM 模型详解**](http://www.showmeai.tech/article-detail/195) 和 [**LightGBM 建模应用详解**](http://www.showmeai.tech/article-detail/205) 了解 LightGBM 模型的原理和应用方法。
 
-```
+```py
 import lightgbm as lgb
 import pandas as pd 
 ```
 
 CatBoost 要求所有类别变量都采用字符串格式。因此，我们首先将数据中的类别变量转换为字符串：
 
-```
+```py
 categorical_features = np.where(feature_matrix.dtypes == 'object')[0]
 
 for i in categorical_features:
@@ -266,13 +266,13 @@ for i in categorical_features:
 
 然后重新把 feature_matrix 拆回训练集和测试集。
 
-```
+```py
 feature_matrix.drop(['id'], axis=1, inplace=True)
 train = feature_matrix[:8523]
 test = feature_matrix[8523:] 
 ```
 
-```
+```py
 # removing uneccesary variables
 train.drop(['Outlet_Identifier'], axis=1, inplace=True)
 test.drop(['Outlet_Identifier'], axis=1, inplace=True) 
@@ -280,7 +280,7 @@ test.drop(['Outlet_Identifier'], axis=1, inplace=True)
 
 将训练集拆成训练和验证两部分，以便在本地测试算法的性能。
 
-```
+```py
 from sklearn.model_selection import train_test_split
 
 # splitting train data into training and validation set
@@ -289,7 +289,7 @@ xtrain, xvalid, ytrain, yvalid = train_test_split(train, sales, test_size=0.25, 
 
 最后，训练模型。采用 RMSE(Root Mean Squared Error，均方根误差) 作为衡量指标。
 
-```
+```py
 # 初始化 LGBMRegressor 回归器
 model_lgb = lgb.LGBMRegressor(iterations=5000, learning_rate=0.05, depth=6, eval_metric='RMSE', random_seed=7)
 # 训练模型
@@ -298,7 +298,7 @@ model_lgb.fit(xtrain, ytrain, eval_set=[(xvalid, yvalid)], early_stopping_rounds
 
 ![Featuretools; 自动化特征工程工具; Featuretools 实践; 9-14](img/37a92f1763d478340ee8b45fa38c89bf.png)
 
-```
+```py
 from sklearn.metrics import mean_squared_error
 np.sqrt(mean_squared_error(model_lgb.predict(xvalid), yvalid)) 
 ```

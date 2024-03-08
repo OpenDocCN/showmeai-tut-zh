@@ -34,13 +34,13 @@ python 环境与 IDE 设置可以参考[ShowMeAI](http://www.showmeai.tech/)文�
 
 这些系统下的 XGBoost 安装，大家只要基于 pip 就可以轻松完成了，在命令行端输入命令如下命令即可等待安装完成。
 
-```
+```py
 pip install xgboost 
 ```
 
 大家也可以选择国内的 pip 源，以获得更好的安装速度
 
-```
+```py
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple xgboost 
 ```
 
@@ -50,7 +50,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple xgboost
 
 对于 windows 系统而言，比较高效便捷的安装方式是：在网址[`www.lfd.uci.edu/~gohlke/pythonlibs/`](http://www.lfd.uci.edu/~gohlke/pythonlibs/) 中去下载对应版本的的 XGBoost 安装包，再通过如下命令安装。
 
-```
+```py
 pip install xgboost‑1.5.1‑cp310‑cp310‑win32.whl 
 ```
 
@@ -68,19 +68,19 @@ XGBoost 的 SKLearn 接口也支持对于 Dataframe 格式的数据(参考[ShowM
 
 *   加载 libsvm 格式的数据
 
-```
+```py
 dtrain1 = xgb.DMatrix('train.svm.txt') 
 ```
 
 *   加载二进制的缓存文件
 
-```
+```py
 dtrain2 = xgb.DMatrix('train.svm.buffer') 
 ```
 
 *   加载 numpy 的数组
 
-```
+```py
 data = np.random.rand(5,10) # 5 entities, each contains 10 features
 label = np.random.randint(2, size=5) # binary target
 dtrain = xgb.DMatrix( data, label=label) 
@@ -88,27 +88,27 @@ dtrain = xgb.DMatrix( data, label=label)
 
 *   将 scipy.sparse 格式的数据转化为 DMatrix 格式
 
-```
+```py
 csr = scipy.sparse.csr_matrix( (dat, (row,col)) )
 dtrain = xgb.DMatrix( csr ) 
 ```
 
 *   将 DMatrix 格式的数据保存成 XGBoost 的二进制格式，在下次加载时可以提高加载速度，使用方式如下
 
-```
+```py
 dtrain = xgb.DMatrix('train.svm.txt')
 dtrain.save_binary("train.buffer") 
 ```
 
 *   可以用如下方式处理 DMatrix 中的缺失值
 
-```
+```py
 dtrain = xgb.DMatrix( data, label=label, missing = -999.0) 
 ```
 
 *   当需要给样本设置权重时，可以用如下方式
 
-```
+```py
 w = np.random.rand(5,1)
 dtrain = xgb.DMatrix( data, label=label, missing = -999.0, weight=w) 
 ```
@@ -124,7 +124,7 @@ XGBoost 内置了建模方式，有如下的数据格式与核心训练方法：
 
 下面是官方的一个简单示例，演示了读取 libsvm 格式数据(成`DMatrix`格式)并指定参数建模的过程。
 
-```
+```py
 # 导入工具库
 import numpy as np
 import scipy.sparse
@@ -162,7 +162,7 @@ bst.save_model('./model/0001.model')
 
 ![XGBoost 工具库建模应用详解; 不同建模方式; 内置建模方式–libsvm; 4-3](img/470a3e70ec94d87811c1b80b1bfbab72.png)
 
-```
+```py
 [0]  eval-error:0.042831  train-error:0.046522
 [1]  eval-error:0.021726  train-error:0.022263
 错误率为 0.021726 
@@ -172,7 +172,7 @@ bst.save_model('./model/0001.model')
 
 下面的例子，输入的数据源是 csv 文件，我们使用大家熟悉的 pandas 工具库(参考[ShowMeAI](http://www.showmeai.tech/)教程 [**数据分析系列教程**](http://www.showmeai.tech/tutorials/33) 与 [**数据科学工具速查 | Pandas 使用指南**](http://www.showmeai.tech/article-detail/101))把数据读取为 Dataframe 格式，再构建 Dmatrix 格式输入，后续使用内置建模方式进行训练。
 
-```
+```py
 # 皮马印第安人糖尿病数据集 包含很多字段：怀孕次数 口服葡萄糖耐量试验中血浆葡萄糖浓度 舒张压(mm Hg) 三头肌组织褶厚度(mm) 
 # 2 小时血清胰岛素(μU/ ml) 体重指数(kg/(身高(m)²) 糖尿病系统功能 年龄(岁)
 import pandas as pd
@@ -182,7 +182,7 @@ data.head()
 
 ![XGBoost 工具库建模应用详解; 不同建模方式; 内置建模方式–csv; 4-4](img/1e6e6f005558440e895dae6d4f51bacc.png)
 
-```
+```py
 # 导入工具库
 import numpy as np
 import pandas as pd
@@ -226,7 +226,7 @@ bst.save_model('./model/0002.model')
 
 ![XGBoost 工具库建模应用详解; 不同建模方式; 内置建模方式–csv; 4-5](img/aaacdb61ec0d919b357d43228a5d222f.png)
 
-```
+```py
 [0]  eval-error:0.354167  train-error:0.194444
 [1]  eval-error:0.34375   train-error:0.170139
 [2]  eval-error:0.322917  train-error:0.170139
@@ -244,7 +244,7 @@ bst.save_model('./model/0002.model')
 
 XGBoost 也支持用 SKLearn 中统一的预估器形态接口进行建模，如下为典型的参考案例，对于读取为 Dataframe 格式的训练集和测试集，可以直接使用 XGBoost 初始化 XGBClassifier 进行 fit 拟合训练。使用方法与接口，和 SKLearn 中其他预估器一致。
 
-```
+```py
 # 导入工具库
 import numpy as np
 import pandas as pd
@@ -286,7 +286,7 @@ joblib.dump(xgb_classifier, './model/0003.model')
 
 ![XGBoost 工具库建模应用详解; 不同建模方式; 预估建模方式; 4-6](img/5c010d5b6d2de68a67393d86be88a95b.png)
 
-```
+```py
 错误类为 0.265625
 
 ['./model/0003.model'] 
@@ -427,7 +427,7 @@ L1 正则的惩罚系数
 
 XGBoost 自带实验与调参的一些方法，如下为交叉验证方法`xgb.cv`。
 
-```
+```py
 xgb.cv(param, dtrain, num_round, nfold=5,metrics={'error'}, seed = 0) 
 ```
 
@@ -437,7 +437,7 @@ xgb.cv(param, dtrain, num_round, nfold=5,metrics={'error'}, seed = 0)
 
 我们可以把数据建模过程中的一些设置加到交叉验证环节里，比如对于不同类别的样本加权，可以参考下列代码示例
 
-```
+```py
 # 计算正负样本比，调整样本权重
 def fpreproc(dtrain, dtest, param):
     label = dtrain.get_label()
@@ -458,7 +458,7 @@ xgb.cv(param, dtrain, num_round, nfold=5,
 
 XGBoost 支持在训练过程中，自定义损失函数和评估准则，其中损失函数的定义需要返回损失函数一阶和二阶导数的计算方法，评估准则部分需要对数据的 label 和预估值进行计算。其中损失函数用于训练过程中的树结构学习，而评估准则很多时候是用在验证集上进行效果评估。
 
-```
+```py
 print('使用自定义损失函数进行交叉验证')
 # 自定义损失函数，需要提供损失函数的一阶导和二阶导
 def logregobj(preds, dtrain):
@@ -486,7 +486,7 @@ xgb.cv(param, dtrain, num_round, nfold = 5, seed = 0, obj = logregobj, feval=eva
 
 ![XGBoost 工具库建模应用详解; 模型调参与高级功能; 自定义损失函数与评估准则; 4-16](img/3b300deab4b8f78c99590f84ac16d02e.png)
 
-```
+```py
 使用自定义损失函数进行交叉验证
 [0]  eval-rmse:0.306901   train-rmse:0.306164  eval-error:0.518312  train-error:0.517887
 [1]  eval-rmse:0.179189   train-rmse:0.177278  eval-error:0.518312  train-error:0.517887
@@ -499,7 +499,7 @@ xgb.cv(param, dtrain, num_round, nfold = 5, seed = 0, obj = logregobj, feval=eva
 
 对于 boosting 模型来说，最后会训练得到很多基学习器(在 XGBoost 中很多时候是很多棵树)，我们可以一次完整训练，只用前 n 棵树的集成来完成预测。
 
-```
+```py
 #!/usr/bin/python
 import numpy as np
 import pandas as pd
@@ -540,7 +540,7 @@ print('用前 9 颗树预测的错误率为 %f' % (np.sum((ypred2>0.5)!=label) /
 
 ![XGBoost 工具库建模应用详解; 模型调参与高级功能; 只用前 n 颗树预测; 4-17](img/9d295e37a407e750e332c1045803fa86.png)
 
-```
+```py
 [0]  eval-error:0.255208  train-error:0.196181
 [1]  eval-error:0.234375  train-error:0.175347
 [2]  eval-error:0.25   train-error:0.163194
@@ -561,7 +561,7 @@ print('用前 9 颗树预测的错误率为 %f' % (np.sum((ypred2>0.5)!=label) /
 
 XGBoost 有 SKLearn 预估器形态的接口，整体使用方法和 SKLearn 中其他预估器一致，如下是手动对数据做交叉验证，注意到这里直接使用`XGBClassifier`对 Dataframe 数据进行 fit 拟合和评估。
 
-```
+```py
 import pickle
 import xgboost as xgb
 
@@ -616,7 +616,7 @@ for train_index, test_index in kf.split(X):
     print("MSE:",mean_squared_error(actuals, predictions)) 
 ```
 
-```
+```py
 数字 0 和 1 的二分类问题
 在 2 折数据上的交叉验证
 混淆矩阵:
@@ -650,7 +650,7 @@ MSE: 15.942418468446029
 如下是一个典型的网格搜索交法调优超参数的代码示例，我们会给出候选参数列表字典，通过`GridSearchCV`进行交叉验证实验评估，选出 XGBoost 在候选参数中最优的超参数。
 print(“参数最优化：”)
 
-```
+```py
 y = boston['target']
 X = boston['data']
 xgb_model = xgb.XGBRegressor()
@@ -664,7 +664,7 @@ print(clf.best_params_)
 
 ![XGBoost 工具库建模应用详解; 模型调参与高级功能; 网格搜索调参; 4-18](img/c0157ed46e439f31d3f256111f8571a7.png)
 
-```
+```py
 参数最优化：
 Fitting 3 folds for each of 9 candidates, totalling 27 fits
 
@@ -682,7 +682,7 @@ XGBoost 模型有时候会因为不停叠加新的树(修正训练集上拟合�
 
 下面是对应的代码示例，其中参数`early_stopping_rounds`设定了验证集上能接受的效果不提升的最多轮次数，`eval_set`指定了验证数据集。
 
-```
+```py
 # 在训练集上学习模型，一颗一颗树添加，在验证集上看效果，当验证集效果不再提升，停止树的添加与生长
 X = digits['data']
 y = digits['target']
@@ -694,7 +694,7 @@ clf.fit(X_train, y_train, early_stopping_rounds=10, eval_metric="auc",
 
 ![XGBoost 工具库建模应用详解; 模型调参与高级功能; early stopping 早停止; 4-19](img/8f5598fc6e26936012e46c6fc399a5c2.png)
 
-```
+```py
 [0]  validation_0-auc:0.999497
 Will train until validation_0-auc hasn't improved in 10 rounds.
 [1]  validation_0-auc:0.999497
@@ -732,7 +732,7 @@ XGBClassifier(base_score=0.5, booster='gbtree', colsample_bylevel=1,
 
 XGBoost 建模过程中，还可以学习到对应的特征重要度信息，并保存在模型的`feature_importances_`属性中。如下为绘制特征重要度的可视化代码：
 
-```
+```py
 iris = load_iris()
 y = iris['target']
 X = iris['data']
@@ -756,7 +756,7 @@ plt.xticks(range(len(feature_importances)), np.array(feature_names)[indices], co
 
 ![XGBoost 工具库建模应用详解; 模型调参与高级功能; 输出特征重要度; 4-20](img/7d2c1778fe45de9cc3d1755503a82d08.png)
 
-```
+```py
 特征排序：
 特征 petal_length 重要度为 0.415567
 特征 petal_width 重要度为 0.291557
@@ -770,7 +770,7 @@ plt.xticks(range(len(feature_importances)), np.array(feature_names)[indices], co
 
 在多资源的情况下，XGBoost 可以实现并行训练加速，示例代码如下：
 
-```
+```py
 import os
 
 if __name__ == "__main__":
@@ -803,7 +803,7 @@ if __name__ == "__main__":
     print(clf.best_params_) 
 ```
 
-```
+```py
 Parallel Parameter optimization
 Fitting 3 folds for each of 9 candidates, totalling 27 fits
 

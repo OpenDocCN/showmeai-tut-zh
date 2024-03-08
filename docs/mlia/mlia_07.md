@@ -190,7 +190,7 @@ R M S P E = 1 n ∑ i = 1 n ( y i − y ^ i y i ) 2 = 1 n ∑ i = 1 n ( y ^ i y 
 
 我们使用了`matplotlib.pyplot`绘制了序号为 1 的店铺从 2013 年 1 月到 2015 年月的销售数据的曲线图。
 
-```
+```py
 train.loc[train['Store']==1,['Date','Sales']].plot(x='Date',y='Sales',title='The Sales Data In Store 1',figsize=(16,4)) 
 ```
 
@@ -215,7 +215,7 @@ train.loc[train['Store']==1,['Date','Sales']].plot(x='Date',y='Sales',title='The
 
 如果我们想查看一定时间范围内的销售额数据，可以调整`loc`函数内容对 x 轴进行范围选取。
 
-```
+```py
 train.loc[train['Store']==1,['Date','Sales']].plot(x='Date',y='Sale s',title='Store1',figsize=(8,2),xlim=['2014-6-1','2014-7-31']) 
 ```
 
@@ -229,7 +229,7 @@ train.loc[train['Store']==1,['Date','Sales']].plot(x='Date',y='Sale s',title='St
 
 下面我们对单维度特征进行数据分析，Seaborn 提供了`distplot()`这个方便就可以绘制数据分布的 api。
 
-```
+```py
 sns.distplot(train.loc[train['Store']==1,['Date','Sales']]['Sales'],bins=10, rug=True) 
 ```
 
@@ -248,7 +248,7 @@ sns.distplot(train.loc[train['Store']==1,['Date','Sales']]['Sales'],bins=10, rug
 
 除了对单变量进行分布分析，我们还可以通过对二元变量进行交叉联合分布分析获得更多的关联信息。在 Seaborn 中的`jointplot()`函数可以帮助我们很好的分析两个变量之间的关系。
 
-```
+```py
 sns.jointplot(x=train["Sales"], y=train["Customers"], kind="hex") 
 ```
 
@@ -270,7 +270,7 @@ sns.jointplot(x=train["Sales"], y=train["Customers"], kind="hex")
 
 这里给出范例代码：
 
-```
+```py
 sns.jointplot(x=train["Sales"], y=train["Customers"], kind="hex", stat_func=stats.kendalltau, kind="reg") 
 ```
 
@@ -280,7 +280,7 @@ sns.jointplot(x=train["Sales"], y=train["Customers"], kind="hex", stat_func=stat
 
 下面以销售数据为例，讲解使用 Seaborn 中的`boxplot()`函数对销售数据进行分析的过程。
 
-```
+```py
 sns.boxplot(train.Sales, palette="Set3") 
 ```
 
@@ -292,7 +292,7 @@ sns.boxplot(train.Sales, palette="Set3")
 
 我们想将销售数据分成 4 个箱线图(不同店铺类型)，每个箱线图表示一周店铺类型的销售额。先将 store 中的 storeTpye 店铺类型数据放入`train`的数据中，即如下做合并。
 
-```
+```py
 train = pd.merge(train, store, on='Store') 
 ```
 
@@ -300,7 +300,7 @@ train = pd.merge(train, store, on='Store')
 
 接下来我们可以使用`boxplot()`函数进行两列数据的结合分析，其中 x 轴应该是店铺类别数据而 y 应该是销售额的箱线图数据。
 
-```
+```py
 sns.boxplot(x="StoreType", y="Sales", data=train, palette="Set3") 
 ```
 
@@ -314,7 +314,7 @@ sns.boxplot(x="StoreType", y="Sales", data=train, palette="Set3")
 
 Seaborn 中的函数`violinplot()`也提供了和箱线图功能类似的提琴图功能，下面以代码举例。
 
-```
+```py
 sns.violinplot(x="StoreType", y="Sales", data=train, palette="Set3") 
 ```
 
@@ -334,13 +334,13 @@ sns.violinplot(x="StoreType", y="Sales", data=train, palette="Set3")
 
 计算相关性矩阵的代码如下所示：
 
-```
+```py
 train_corr = train.corr() 
 ```
 
 接下来就可以直接利用 Seaborn 的`heatmap()`函数进行热力图的绘制。
 
-```
+```py
 sns.heatmap(train.corr(), annot=True, vmin=-0.1,vmax=0.1,center=0) 
 ```
 
@@ -401,7 +401,7 @@ sns.heatmap(train.corr(), annot=True, vmin=-0.1,vmax=0.1,center=0)
 
 大家通过[ShowMeAI](http://www.showmeai.tech/)前面的工具库详解 [**LightGBM 建模应用详解**](http://www.showmeai.tech/article-detail/205) 知道，如果用 LightGBM 进行训练学习，训练代码非常简单：
 
-```
+```py
 model = lgb.train(params=lgb_parameter, feval=rmsle, train_set=train_data, num_boost_round=15000, valid_sets=watchlist, early_stopping_rounds=1000, verbose_eval=1000) 
 ```
 
@@ -427,7 +427,7 @@ model = lgb.train(params=lgb_parameter, feval=rmsle, train_set=train_data, num_b
 
 首先我们看到有一些类别型字段，比如`SotreType`、`Assortment`以及`StateHoliday`，是以 a、b、c、d 这样的数值形式保存的，常用的数据预处理或者特征工程，会将其进行编码。我们这里用`mapping`函数将其编码变换为 0123 这样的数字。
 
-```
+```py
 mappings = {'0':0, 'a':1, 'b':2, 'c':3, 'd':4}
 data['StoreType'] = data.StoreType.map(mappings)
 data['Assortment']= data.Assortment.map(mappings)
@@ -436,7 +436,7 @@ data['StateHoliday']= data.StateHoliday.map(mappings)
 
 再注意到时间型的字段 date，是以`YYYY-MM-DD`这样的日期时间戳的形式记录的。我们最常做的操作，是将时间戳拆分开来，比如年月日可以拆分成`Year`、`Month`、`Day`这样的形式会更有利于我们的模型学习到有效的信息。
 
-```
+```py
 data['Year'] = data.Date.dt.year
 data['Month'] = data.Date.dt.month
 data['Day'] = data.Date.dt.day
@@ -448,7 +448,7 @@ data['WeekOfYear'] = data.Date.dt.weekofyear
 
 再看`CompetitionOpenSince`和`Promo2Since`两个字段，这两列数据表示促销开始的时间，这样的数据是固定的，但是开始的时间到当前时间点的数据是很有价值帮助我们预测销售额。所以这里需要一定变化，我们将促销开始的时间减去当前 data 的时间即可。
 
-```
+```py
 data['CompetitionOpen']=12*(data.Year-data.CompetitionOpenSinceYear)+(data.Month - data.CompetitionOpenSinceMonth)
 data['PromoOpen'] = 12 *(data.Year-data.Promo2SinceYear)+ (data.WeekOfYear - data.Promo2SinceWeek) / 4.0
 data['CompetitionOpen'] = data.CompetitionOpen.apply(lambda x: x if x > 0 else 0)
@@ -459,7 +459,7 @@ data['PromoOpen'] = data.PromoOpen.apply(lambda x: x if x > 0 else 0)
 
 在数据中还有一列`PromoInterval`以列出月信息的形式储存正在促销的月份，我们想将其转化为以月份信息为准，如这个时间点的月份在这个`PromoInterval`中则这一店的这一时间点在促销中。
 
-```
+```py
 data.loc[data.PromoInterval == 0, 'PromoInterval'] = ''
 data['IsPromoMonth'] = 0
 for interval in data.PromoInterval.unique():
@@ -479,7 +479,7 @@ for interval in data.PromoInterval.unique():
 
 很多机器学习有很多超参数可以调整，以这里的 LightGBM 为例，下面为选出的系列参数。关于 LightGBM 的参数和调参方法可以参考 [**LightGBM 建模应用详解**](http://www.showmeai.tech/article-detail/205)。
 
-```
+```py
 params ={
 'boosting_type': 'gbdt',
 'objective': 'regression',
@@ -510,7 +510,7 @@ params ={
 *   `is_unbalance`：设置可以应对类别非均衡数据集。
 *   `min_data_in_leaf`：叶子节点最少样本数，调大它的值可以防止过拟合，它的值通常设置的比较大。
 
-```
+```py
 # coding: utf-8
 import lightgbm as lgb
 import pandas as pd

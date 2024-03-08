@@ -137,7 +137,7 @@ SKLearn 里面有很多自带数据集供用户使用。
 
 我们可以直接从 SKLearn 里面的 datasets 模块中引入，代码如下(代码可以在 [线上 Jupyter 环境](https://jupyter.org/try) 中运行)：
 
-```
+```py
 # 导入工具库
 from sklearn.datasets import load_iris    
 iris = load_iris()
@@ -148,13 +148,13 @@ iris.keys()
 
 输出如下：
 
-```
+```py
 dict_keys(['data', 'target', 'target_names', 'DESCR', 'feature_names', 'filename']) 
 ```
 
 读取数据集的信息：
 
-```
+```py
 #输出 iris 数据中特征的大小、名称等信息和前五个样本。
 n_samples, n_features = iris.data.shape    
 print((n_samples, n_features))    
@@ -166,7 +166,7 @@ iris.data[0:5]
 
 输出如下：
 
-```
+```py
 (150, 4)
 ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
 (150,)
@@ -180,7 +180,7 @@ array([[5.1, 3.5, 1.4, 0.2],
 
 构建 Dataframe 格式的数据集：
 
-```
+```py
 # 将 X 和 y 合并为 Dataframe 格式数据 
 import pandas as pd
 import seaborn as sns
@@ -203,7 +203,7 @@ iris_data.head(3).append(iris_data.tail(3))
 
 我们使用 seaborn 来做一些数据分析，查看一下数据的分布特性。这里使用到的是成对维度的关联分析，关于 seaborn 的使用方法可以参阅[ShowMeAI](http://www.showmeai.tech/)的文章 [**seaborn 工具与数据可视化教程**](http://www.showmeai.tech/article-detail/151)。
 
-```
+```py
 # 使用 Seaborn 的 pairplot 查看两两特征之间的关系
 sns.pairplot( iris_data, hue='species', palette='husl' ) 
 ```
@@ -226,33 +226,33 @@ sns.pairplot( iris_data, hue='species', palette='husl' )
 
 比如我们调用`load_iris`
 
-```
+```py
 from sklearn import datasets
 datasets.load_iris 
 ```
 
 输出如下：
 
-```
+```py
 <function sklearn.datasets.base.load_iris(return_X_y=False)> 
 ```
 
 我们调用`load_digits`加载手写数字图像数据集
 
-```
+```py
 digits = datasets.load_digits()
 digits.keys() 
 ```
 
 输出：
 
-```
+```py
 dict_keys(['data', 'target', 'target_names', 'images', 'DESCR']) 
 ```
 
 我们再来看看通过 fetch 拉取数据的示例：
 
-```
+```py
 #加州房屋数据集
 california_housing = datasets.fetch_california_housing()    
 california_housing.keys() 
@@ -260,7 +260,7 @@ california_housing.keys()
 
 输出：
 
-```
+```py
 dict_keys(['data', 'target', 'feature_names', 'DESCR']) 
 ```
 
@@ -309,7 +309,7 @@ dict_keys(['data', 'target', 'feature_names', 'DESCR'])
 
 首先从 SKLearn 工具库的`linear_model`中引入`LinearRegression`；创建模型对象命名为 model，设置超参数`normalize`为`True`（在每个特征值上做标准化，这样能保证拟合的稳定性，加速模型拟合速度）。
 
-```
+```py
 from sklearn.linear_model import LinearRegression
 model = LinearRegression(normalize=True)
 model 
@@ -317,7 +317,7 @@ model
 
 输出：
 
-```
+```py
 LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=True) 
 ```
 
@@ -325,7 +325,7 @@ LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=True)
 
 自己创建一个简单数据集（一条直线上的数据点），简单讲解一下估计器里面的特征。
 
-```
+```py
 import numpy as np
 import matplotlib.pyplot as plt
 x = np.arange(10)    
@@ -337,20 +337,20 @@ plt.plot( x, y, 'o' )
 
 在我们生成的数据里，X 是一维，我们做一点小小的调整，用`np.newaxis`加一个维度，把[1,2,3]转成[[1],[2],[3]]，这样的数据形态可以符合 sklearn 的要求。接着把 X 和 y 送入`fit()`函数来拟合线性模型的参数。
 
-```
+```py
 X = x[:, np.newaxis]    
 model.fit( X, y ) 
 ```
 
 输出为：
 
-```
+```py
 LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=True) 
 ```
 
 拟合完后的估计器和创建完似乎没有差别，但我们已经可以用`model.param_`访问到拟合完数据的参数了，如下代码。
 
-```
+```py
 print( model.coef_ )    
 print( model.intercept_ )
 # 输出结果
@@ -366,7 +366,7 @@ print( model.intercept_ )
 
 虽然 iris 数据里包含标签 y，但在无监督的聚类中我们不会使用到这个信息。
 
-```
+```py
 from sklearn.cluster import KMeans    
 model = KMeans( n_clusters=3 )    
 model 
@@ -374,7 +374,7 @@ model
 
 输出为：
 
-```
+```py
 KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
        n_clusters=3, n_init=10, n_jobs=None, precompute_distances='auto',
        random_state=None, tol=0.0001, verbose=0) 
@@ -384,7 +384,7 @@ iris 数据集包含四维特征(萼片长、萼片宽、花瓣长、花瓣宽)�
 
 > 注意下面代码`X = iris.data[:,0:2]`其实就是提取特征维度。
 
-```
+```py
 from sklearn.datasets import load_iris    
 iris = load_iris()
 X = iris.data[:,0:2]    
@@ -393,7 +393,7 @@ model.fit(X)
 
 输出为：
 
-```
+```py
 KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
        n_clusters=3, n_init=10, n_jobs=None, precompute_distances='auto',
        random_state=None, tol=0.0001, verbose=0) 
@@ -401,7 +401,7 @@ KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
 
 拟合完后的估计器和创建完似乎没有差别，但我们已经可以用`model.param_`访问到拟合完数据的参数了，如下代码。
 
-```
+```py
 print( model.cluster_centers_, '\n')    
 print( model.labels_, '\n' )    
 print( model.inertia_, '\n')    
@@ -439,7 +439,7 @@ print(iris.target)
 
 ![SKLearn 最全应用指南; SKLearn 核心 API; 估计器–通用伪代码; 3-17](img/081bc6d7b09239ac0971f8f1f2d5d440.png)
 
-```
+```py
 # 有监督学习
 from sklearn.xxx import SomeModel
 # xxx 可以是 linear_model 或 ensemble 等
@@ -466,7 +466,7 @@ model.fit( X )
 
 为了进行新数据评估，我们先将数据分成 80:20 的训练集`(X_train, y_train)`和测试集`(X_test, y_test)`，再用从训练集上拟合 fit()的模型在测试集上预测`predict()`。
 
-```
+```py
 from sklearn.datasets import load_iris    
 iris = load_iris()
 from sklearn.model_selection import train_test_split    
@@ -487,7 +487,7 @@ The size of y_test is  (30,)
 
 对于分类问题，我们不仅想知道预测的类别是什么，有时我们还希望获取预测概率等信息。前者用 `predict()`，后者用`predict_proba()`。
 
-```
+```py
 y_pred = model.predict( X_test )
 p_pred = model.predict_proba( X_test )
 print( y_test, '\n' )
@@ -502,7 +502,7 @@ print( p_pred )
 *   `score()`返回的是分类准确率。
 *   `decision_function()`返回的是每个样例在每个类下的分数值。
 
-```
+```py
 print( model.score( X_test, y_test ) )
 print( np.sum(y_pred==y_test)/len(y_test) )
 decision_score = model.decision_function( X_test )
@@ -517,7 +517,7 @@ print( decision_score )
 
 ![SKLearn 最全应用指南; SKLearn 核心 API; 预测器–通用伪代码; 3-19](img/5f9726c8f9d0f053061e7d39d61cae36.png)
 
-```
+```py
 # 有监督学习
 from sklearn.xxx import SomeModel
 # xxx 可以是 linear_model 或 ensemble 等
@@ -560,7 +560,7 @@ LabelEncoder 和 OrdinalEncoder 都可以将字符转成数字，但是：
 *   LabelEncoder 的输入是一维，比如 1d ndarray
 *   OrdinalEncoder 的输入是二维，比如 DataFrame
 
-```
+```py
 # 首先给出要编码的列表 enc 和要解码的列表 dec。
 enc = ['red','blue','yellow','red']    
 dec = ['blue','blue','red']
@@ -578,7 +578,7 @@ LabelEncoder()
 
 除了 LabelEncoder，OrdinalEncoder 也可以完成编码。如下代码所示：
 
-```
+```py
 from sklearn.preprocessing import OrdinalEncoder    
 OE = OrdinalEncoder()    
 enc_DF = pd.DataFrame(enc)    
@@ -606,7 +606,7 @@ OrdinalEncoder(categories='auto', dtype=<class 'numpy.float64'>)
 
 **一、用 LabelEncoder 编码好的一维数组(元素为整数)，重塑(用 reshape(-1,1))成二维数组作为 OneHotEncoder 输入**。
 
-```
+```py
 from sklearn.preprocessing import OneHotEncoder    
 OHE = OneHotEncoder()    
 num = LE.fit_transform( enc )    
@@ -618,7 +618,7 @@ OHE_y
 
 输出为：
 
-```
+```py
 <4x3 sparse matrix of type '<class 'numpy.float64'>'
     with 4 stored elements in Compressed Sparse Row format> 
 ```
@@ -630,13 +630,13 @@ OHE_y
 
 想看该矩阵里具体内容，用`toarray()`函数。
 
-```
+```py
 OHE_y.toarray() 
 ```
 
 输出为：
 
-```
+```py
 array([[0., 0., 1.],
        [1., 0., 0.],
        [0., 1., 0.],
@@ -645,14 +645,14 @@ array([[0., 0., 1.],
 
 **二、用 DataFrame 作为 OneHotEncoder 输入**。
 
-```
+```py
 OHE = OneHotEncoder()    
 OHE.fit_transform( enc_DF ).toarray() 
 ```
 
 输出为：
 
-```
+```py
 array([[0., 0., 1.],
        [1., 0., 0.],
        [0., 1., 0.],
@@ -674,7 +674,7 @@ array([[0., 0., 1.],
 
 如上图所示，MinMaxScaler 会根据特征的最大最小取值，对数据进行幅度缩放。
 
-```
+```py
 from sklearn.preprocessing import MinMaxScaler    
 X = np.array( [0, 0.5, 1, 1.5, 2, 100] )    
 X_scale = MinMaxScaler().fit_transform( X.reshape(-1,1) )    
@@ -683,7 +683,7 @@ X_scale
 
 输出为：
 
-```
+```py
 array([[0\.   ],
        [0.005],
        [0.01 ],
@@ -696,7 +696,7 @@ array([[0\.   ],
 
 StandardScaler 做的事情是调整数据分布，尽量接近正态分布。
 
-```
+```py
 from sklearn.preprocessing import StandardScaler    
 X_scale = StandardScaler().fit_transform( X.reshape(-1,1) )    
 X_scale 
@@ -704,7 +704,7 @@ X_scale
 
 输出为：
 
-```
+```py
 array([[-0.47424487],
        [-0.46069502],
        [-0.44714517],
@@ -756,7 +756,7 @@ array([[-0.47424487],
 
 首先将数据分成 80:20 的训练集和测试集，并引入 metrics 来计算各种性能指标。
 
-```
+```py
 from sklearn.datasets import load_iris    
 iris = load_iris()
 from sklearn.model_selection import train_test_split    
@@ -770,7 +770,7 @@ X_train, X_test, y_train, y_test = train_test_split(iris['data'], iris['target']
 
 [**随机森林**](http://www.showmeai.tech/article-detail/191)RandomForestClassifier 通过控制`n_estimators`超参数来决定基估计器的个数，在这里是 4 棵决策树(森林由树组成)；此外每棵树的最大树深为 5(`max_depth=5`)。
 
-```
+```py
 from sklearn.ensemble import RandomForestClassifier    
 RF = RandomForestClassifier( n_estimators=4, max_depth=5 )    
 RF.fit( X_train, y_train ) 
@@ -778,7 +778,7 @@ RF.fit( X_train, y_train )
 
 输出为：
 
-```
+```py
 RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                        max_depth=5, max_features='auto', max_leaf_nodes=None,
                        min_impurity_decrease=0.0, min_impurity_split=None,
@@ -790,14 +790,14 @@ RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
 
 元估计器和预估器一样也有`fit()`。下面看看随机森林里包含的估计器个数和其本身。
 
-```
+```py
 print( RF.n_estimators )    
 RF.estimators_ 
 ```
 
 输出为：
 
-```
+```py
 4
 
 [DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=5,
@@ -828,14 +828,14 @@ RF.estimators_
 
 拟合 RF 完再做预测，用 metrics 里面的 accuracy_score 来计算准确率。训练准确率 98.33%，测试准确率 100%。
 
-```
+```py
 print ( "RF - Accuracy (Train):  %.4g" %     
         metrics.accuracy_score(y_train, RF.predict(X_train)) )    
 print ( "RF - Accuracy (Test):  %.4g" %     
         metrics.accuracy_score(y_test, RF.predict(X_test)) ) 
 ```
 
-```
+```py
 RF - Accuracy (Train):  1
 RF - Accuracy (Test):  0.9667 
 ```
@@ -848,7 +848,7 @@ RF - Accuracy (Test):  0.9667
 
 RandomForestClassifier 的基分类器只能是决策树，因此只用通过控制`n_estimators`超参数来决定树的个数，而 VotingClassifier 的基分类器要输入每个异质分类器。
 
-```
+```py
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
@@ -865,20 +865,20 @@ Ensemble. fit( X_train, y_train )
 
 结果如下：
 
-```
+```py
 VotingClassifier(estimators=[('lr', LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,intercept_scaling=1, max_iter=100, multi_class='multinomial',n_jobs=None, penalty='12', random_state=None, solver='lbfgs',tol=0.0001, verbose=6, warm_start=False)), ('rf', ...e, verbose=0,warm_start=False)), ('gnb', GaussianNB(priors=None, var_smoothing=1e-09))],flatten_transform=None, n_jobs=None, voting='hard', weights=None) 
 ```
 
 看看 Ensemble 集成模型里包含的估计器个数和其本身。
 
-```
+```py
 print( len(Ensemble.estimators_) )        
 Ensemble.estimators_ 
 ```
 
 结果如下：
 
-```
+```py
 3
 
 [LogisticRegression(C=1.0, class_weight-None, dual-False, fit_intercept=True,intercept_scaling=1, max_iter=100, multi_class='multinomial',n_jobs-None, penalty="12", random_state-None, solver='1bfgs',t01=0.0001, verbose=0, warm_start=False),
@@ -891,14 +891,14 @@ GaussianNB(priors-None, var_smoothing=1e-9)]
 
 对比元估计器和它三个组成元素的表现，下过表现如下：
 
-```
+```py
 # 拟合
 LR.fit( X_train, y_train )        
 RF.fit( X_train, y_train )        
 GNB.fit( X_train, y_train ) 
 ```
 
-```
+```py
 # 评估效果
 print ( "LR - Accuracy (Train): %.4g" % metrics.accuracy_score(y_train, LR.predict(X_train)) )
 print ( "RF - Accuracy (Train): %.4g" % metrics.accuracy_score(y_train, RF.predict(X_train)) )
@@ -911,7 +911,7 @@ print ( "GNB - Accuracy (Test): %.4g" % metrics.accuracy_score(y_test, RF.predic
 print ( "Ensemble - Accuracy (Test): %.4g" % metrics.accuracy_score(y test, Ensemble.predict(X_test)) ) 
 ```
 
-```
+```py
 # 运行结果
 LR - Accuracy (Train): 0.975
 RF - Accuracy (Train): 0.9833
@@ -929,7 +929,7 @@ Ensemble - Accuracy (Test): 1
 
 `sklearn.multiclass`可以处理多类别(multi-class) 的多标签(multi-label) 的分类问题。下面我们会使用数字数据集 digits 作为示例数据来讲解。我们先将数据分成 80:20 的训练集和测试集。
 
-```
+```py
 # 导入数据
 from sklearn.datasets import load_digits                 
 digits = load_digits()        
@@ -938,14 +938,14 @@ digits.keys()
 
 输出如下：
 
-```
+```py
 # 输出结果
 dict_keys(['data', 'target', 'target_names','images', 'DESCR']) 
 ```
 
 下面我们切分数据集：
 
-```
+```py
 # 数据集切分
 X_train, X_test, y_train, y_test = train_test_split( digits['data'], digits['target'], test_size=0.2 )
 
@@ -957,7 +957,7 @@ print( 'The size of y_test is ', y_test.shape )
 
 输出如下
 
-```
+```py
 The size of X_train is (1437, 64)
 The size of y_train is (1437,)
 The size of X_test is (360, 64)
@@ -968,7 +968,7 @@ The size of y_test is (360,)
 
 看看训练集中前 100 张图片和对应的标签（如下图）。像素很低，但基本上还是能看清。
 
-```
+```py
 fig, axes = plt.subplots( 10, 16, figsize=(8, 8) )
 fig.subplots_adjust( hspace=0.1, wspace=0.1 )
 for i, ax in enumerate( axes.flat ):
@@ -1004,27 +1004,27 @@ for i, ax in enumerate( axes.flat ):
 
 回到数字分类问题上，代码及结果如下：
 
-```
+```py
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.linear_model import LogisticRegression
 ovo_lr = OneVsOneClassifier( LogisticRegression(solver='lbfgs', max_iter=200) )
 ovo_lr.fit( X_train, y_train ) 
 ```
 
-```
+```py
 OnevsOneClassifier(estimator=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,intercept_scaling=1, max_iter=200, multi_class=‘warn’,n_jobs=None, penalty='12', random_state=None, solver='lbfgs’,tol=0.0001, verbose=6, warm_start=False),n_jobs=None) 
 ```
 
 10*9/2=45，10 类总共 45 个 OvO 分类器。
 
-```
+```py
 print( len(ovo_lr.estimators_) )        
 ovo_lr.estimators_ 
 ```
 
 结果如下：
 
-```
+```py
 45
 
 (LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,intercept_scaling=1, max_iter=200, multi_class='warn',n_jobs=None, penalty='12', random_state=None, solver='lbfgs',tol=60.0001, verbose=0, warm_start=False),
@@ -1041,12 +1041,12 @@ LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
 
 训练集分类全对，测试集准确率 98%。
 
-```
+```py
 print ( “OvO LR - Accuracy (Train): %.4g" % metrics.accuracy_score(y_train, ovo_Ir.predict(X_train)) )
 print ( "OvO LR - Accuracy (Test): %.4g" % metrics.accuracy_score(y_test, ovo_lr.predict(X_test}) ) 
 ```
 
-```
+```py
 # 运行结果
 OvO LR - Accuracy (Train): 1
 OvO LR - Accuracy (Test): 0.9806 
@@ -1072,26 +1072,26 @@ OvO LR - Accuracy (Test): 0.9806
 
 回到数字分类问题上，代码和结果如下：
 
-```
+```py
 from sklearn.multiclass import OneVsRestClassifier
 ova_lr = OneVsRestClassifier( LogisticRegression(solver='lbfgs', max_iter=800) )
 ova_lr.fit( X_train, y_train ) 
 ```
 
-```
+```py
 OnevsRestClassifier(estimator=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, max_iter=800, multi_class=‘warn’, n_jobs=None, penalty='12', random_state=None, solver='lbfgs’, tol=0.0001, verbose=6, warm_start=False), n_jobs=None) 
 ```
 
 10 类总共 10 个 OvA 分类器。
 
-```
+```py
 print( len(ova_lr.estimators_) )        
 ova_lr.estimators_ 
 ```
 
 结果如下：
 
-```
+```py
 10
 
 LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, max_iter=800, multi_class='warn', n_jobs=None, penalty='12', random_state=None, solver='lbfgs',tol=0.0001, verbose=0, warm_start=False),
@@ -1112,12 +1112,12 @@ LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
 
 训练集准确率几乎 100%，测试集准确率 96%。代码与结果如下：
 
-```
+```py
 print ( “OvA LR - Accuracy (Train): %.4g" % metrics.accuracy_score(y_train, ova_Ir.predict(X_train)) )
 print ( "OvA LR - Accuracy (Test): %.4g" % metrics.accuracy_score(y_test, ova_lr.predict(X_test}) ) 
 ```
 
-```
+```py
 OvA LR - Accuracy (Train): 6.9993
 OvA LR - Accuracy (Test}: 6.9639 
 ```
@@ -1135,13 +1135,13 @@ OvA LR - Accuracy (Test}: 6.9639
 
 我们构建多标签`y_train_multilabel`，代码如下（OneVsRestClassifier 也可以用来做多标签分类）：
 
-```
+```py
 from sklearn.multiclass import OneVsRestClassifier                 
 y_train_multilabel = np.c_[y_train%2==0, y_train<=4 ]        
 print(y_train_multilabel) 
 ```
 
-```
+```py
 [[ True True] [False False] [False False] 
 ... 
 [False False] [False False] [False False]] 
@@ -1156,26 +1156,26 @@ print(y_train_multilabel)
 
 我们这次用`y_train_multilabel`来训练模型。代码如下
 
-```
+```py
 ova_ml = OneVsRestClassifier( LogisticRegression(solver='lbfgs', max_iter=800) )
 ova_ml.fit( X_train, y_train_multilabel ) 
 ```
 
-```
+```py
 # 运行结果
 OnevsRestClassifier(estimator=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, max_iter=800, multi_class=‘warn’, n_jobs=None, penalty='12', random_state=None, solver='lbfgs', tol=0.0001, verbose=6, warm_start=False), n_jobs=None) 
 ```
 
 有两个估计器，每个对应一个标签。
 
-```
+```py
 print( len(ova_ml.estimators_) )        
 ova_ml.estimators_ 
 ```
 
 运行结果如下：
 
-```
+```py
 2
 
 [LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, max_iter=800, multi_class=‘warn', n_jobs=None, penalty='12°, random_state=None, solver='lbfgs', tol=0.0001, verbose=0, warm_start=False),
@@ -1185,7 +1185,7 @@ LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True, int
 
 展示一下测试集上 100 张图片。
 
-```
+```py
 fig, axes = plt.subplots( 10, 10, figsize=(8, 8) )
 fig.subplots_adjust( hspace=0.1, wspace=0.1 )
 
@@ -1200,12 +1200,12 @@ for i, ax in enumerate( axes.flat ):
 
 第一张图片是数字 2，它是偶数(标签 1 为 true)，小于等于 4(标签 2 为 true)。
 
-```
+```py
 print( y_test[:1] )        
 print( ova_ml.predict(X_test[:1,:]) ) 
 ```
 
-```
+```py
 [2]
 [[1 1]] 
 ```
@@ -1231,7 +1231,7 @@ Multioutput 估计器有两个：
 
 首先引入 MultiOutputClassifier 和 RandomForestClassifier。
 
-```
+```py
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier 
 ```
@@ -1243,7 +1243,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 代码如下：
 
-```
+```py
 y_train_1st = y_train.copy()
 y_train_1st[ y_train<=4 ] = 0
 y_train_1st[ np.logical_and{y_train>4, y_train<7) ] = 1
@@ -1253,7 +1253,7 @@ y_train_multioutput = np.c_[y_train_1st, y_train]
 y_train_multioutput 
 ```
 
-```
+```py
 # 运行结果
 array( [[0, 4],
         [1, 5],
@@ -1265,23 +1265,23 @@ array( [[0, 4],
 
 用含有 100 棵决策树的随机森林来解决这个多输入分类问题。
 
-```
+```py
 MO = MultiOutputClassifier( RandomForestClassifier(n_estimators=100) )
 MO.fit( X_train, y_train_multioutput ) 
 ```
 
-```
+```py
 # 结果
 MultiOutputClassifier(estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini', max_depth=None, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None, oob_score=False, random_state=None, verbose=0, warm_start=False), n_jobs=None) 
 ```
 
 看看这个模型在测试集前五张照片上的预测。
 
-```
+```py
 MO.predict( X_test[:5,:] ) 
 ```
 
-```
+```py
 array([[0, 2],[0, 2],[0, 0],[2, 9],[1, 5]]) 
 ```
 
@@ -1291,7 +1291,7 @@ array([[0, 2],[0, 2],[0, 0],[2, 9],[1, 5]])
 
 再看看真实标签。
 
-```
+```py
 y_test_1st = y_test.copy()        
 y_test_1st[ y_test<=4 ] = 0        
 y_test_1st[ np.logical_and(y_test>4, y_test<7) ] = 1        
@@ -1300,7 +1300,7 @@ y_test_multioutput = np.c_[ y_test_1st, y_test ]
 y_test_multioutput[:5] 
 ```
 
-```
+```py
 array([[0, 2],[0, 2],[0, 0],[2, 9],[1, 5]]) 
 ```
 
@@ -1337,7 +1337,7 @@ K-折交叉验证(K-fold cross validation set)，指的是把整个数据集平�
 
 应用方式与参考代码如下：
 
-```
+```py
 from time import time
 from scipy.stats import randint
 from sklearn.model_selection import GridSearchCv
@@ -1376,7 +1376,7 @@ print( grid_search.best_score_ )
 
 输出结果如下：
 
-```
+```py
 RandomizedSearchCv took 3.73 seconds for 20 candidates parameter settings.
 {'criterion': 'entropy', '*max_depth': 5, 'max_features': 6, 'min_samples_split': 4}
 0.8898163606010017
@@ -1419,7 +1419,7 @@ Pipeline 的属性永远和最后一个估计器属性一样：
 
 下面是一个简单示例，使用 Pipeline 来完成「填补缺失值-标准化」这两步的。我们先构建含缺失值 NaN 的数据 X。
 
-```
+```py
 X = np.array([[56,40,30,5,7,10,9,np.NaN,12],
               [1.68,1.83,1.77,np.NaN,1.9,1.65,1.88,np.NaN,1.75]])
 X = np.transpose(X) 
@@ -1430,7 +1430,7 @@ X = np.transpose(X)
 *   处理缺失值的转换器 SimpleImputer。
 *   做规划化的转换器 MinMaxScaler。
 
-```
+```py
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
@@ -1444,18 +1444,18 @@ pipe = Pipeline([
 
 因为最后一个估计器是转换器，因此 pipeline 也是个转换器。下面我们来运行一下，我们发现值都被填满了，而且两列也被标准化了。
 
-```
+```py
 X_proc = pipe.fit_transform( X ) 
 ```
 
 来验证上面流水线的参数，我们可以按顺序来运行这两个转换器，结果是一样的。
 
-```
+```py
 X_impute = SimpleImputer(missing values=np.nan, strategy='mean').fit_transform( X )
 X_impute 
 ```
 
-```
+```py
 # 运行结果
 array( [[50, 1.68],
         [40, 1.83],
@@ -1468,14 +1468,14 @@ array( [[50, 1.68],
         [12, 1.75 ]]) 
 ```
 
-```
+```py
 X_normalize = MinMaxScaler().fit_transform( X_impute )
 X_normalize 
 ```
 
 运行结果
 
-```
+```py
 array( [[1., 0.12 ],
         [0.77777778, 0.72],
         [0.55555556, 6.48],
@@ -1495,7 +1495,7 @@ array( [[1., 0.12 ],
 *   后两列字段「收入 income」和「身高 height」都是数值型变量。
 *   每列中都有缺失值。
 
-```
+```py
 d= { 'IQ' : ['high','avg','avg','low', high', avg', 'high', 'high',None],
 'temper' : ['good', None,'good', 'bad', 'bad','bad', 'bad', None, 'bad'],
 'income' : [50,40,30,5,7,10,9,np.NaN,12],
@@ -1518,7 +1518,7 @@ X
 
 首先我们自己定义一个从 DataFrame 里面获取数据列的类，起名叫`DataFrameSelector`。
 
-```
+```py
 from sklearn.base import BaseEstimator, TransformerMixin
 
 class DataFrameSelector( BaseEstimator, TransformerMixin ):
@@ -1547,7 +1547,7 @@ class DataFrameSelector( BaseEstimator, TransformerMixin ):
 
 代码如下：
 
-```
+```py
 from sklearn.pipeline import Pipeline
 from sklearn.pipeline import FeatureUnion
 from sklearn.impute import SimpleImputer
@@ -1574,12 +1574,12 @@ full_pipe = FeatureUnion( transformer_list=[
 
 我们打印结果如下：
 
-```
+```py
 X_proc = full_pipe.fit_transform( X )        
 print( X_proc ) 
 ```
 
-```
+```py
 [[1\. 0.12 0\. 1\. 0\. 0\. 1\. ] 
 [0.77777778 0.72 1\. 0\. 0\. 1\. 0\. ] 
 [0.55555556 0.48 1\. 0\. 0\. 0\. 1\. ] 

@@ -53,7 +53,7 @@
 
 Titanic 数据集可以通过 seaborn 工具库直接加载，如下代码所示：
 
-```
+```py
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -144,11 +144,11 @@ df_titanic = sns.load_dataset('titanic')
 
 我们先对数据集的缺失值情况做一个了解(汇总分布)：
 
-```
+```py
 df_titanic.isnull().sum() 
 ```
 
-```
+```py
 survived         0
 pclass           0
 sex              0
@@ -175,7 +175,7 @@ alone            0
 
 在我们当前 Titanic 的案例中，`embark_town`字段有 2 个空值，考虑删除缺失处理下。
 
-```
+```py
 df_titanic[df_titanic["embark_town"].isnull()]
 df_titanic.dropna(axis=0,how='any',subset=['embark_town'],inplace=True) 
 ```
@@ -198,7 +198,7 @@ df_titanic.dropna(axis=0,how='any',subset=['embark_town'],inplace=True)
 
 **代码实现**
 
-```
+```py
 df_titanic['embark_town'].fillna('unknown', inplace=True) 
 ```
 
@@ -214,13 +214,13 @@ df_titanic['embark_town'].fillna('unknown', inplace=True)
 
 ![机器学习; 数据处理与特征工程; 数据清洗; 缺失值处理; 8-14](img/818e728217adbcac217871819e5a7641.png)
 
-```
+```py
 df_titanic['fare'].fillna(df_titanic['fare'].median(), inplace=True) 
 ```
 
 **众数填充——embarked：只有两个缺失值，使用众数填充**
 
-```
+```py
 df_titanic['embarked'].isnull().sum()
 #执行结果：2
 df_titanic['embarked'].fillna(df_titanic['embarked'].mode(), inplace=True)
@@ -233,15 +233,15 @@ df_titanic['embarked'].value_counts()
 
 **age**：根据 sex、pclass 和 who 分组，如果落在相同的组别里，就用这个组别的均值或中位数填充。
 
-```
+```py
 df_titanic.groupby(['sex', 'pclass', 'who'])['age'].mean() 
 ```
 
-```
+```py
 age_group_mean = df_titanic.groupby(['sex', 'pclass', 'who'])['age'].mean().reset_index() 
 ```
 
-```
+```py
 def select_group_age_median(row):
     condition = ((row['sex'] == age_group_mean['sex']) &
                 (row['pclass'] == age_group_mean['pclass']) &
@@ -271,13 +271,13 @@ df_titanic['age'] =df_titanic.apply(lambda x: select_group_age_median(x) if np.i
 
 *   age 缺失量较大，这里我们用 sex、pclass、who、fare、parch、sibsp 六个特征构建随机森林模型，填充年龄缺失值。
 
-```
+```py
 df_titanic_age = df_titanic[['age', 'pclass', 'sex', 'who','fare', 'parch', 'sibsp']]
 df_titanic_age = pd.get_dummies(df_titanic_age)
 df_titanic_age.head() 
 ```
 
-```
+```py
 # 乘客分成已知年龄和未知年龄两部分
 known_age = df_titanic_age[df_titanic_age.age.notnull()]
 unknown_age = df_titanic_age[df_titanic_age.age.isnull()]
@@ -295,7 +295,7 @@ y_pred_age = rfr.predict(X_test_for_age)
 df_titanic.loc[df_titanic.age.isnull(), 'age'] = y_pred_age 
 ```
 
-```
+```py
 sns.distplot(df_titanic.age) 
 ```
 
@@ -315,13 +315,13 @@ sns.distplot(df_titanic.age)
 
 `.interpolate(method = 'linear', axis)`方法将通过`linear`插值使用沿着给定`axis`的值替换 NaN 值，这个差值也就是前后或者上下的中间值
 
-```
+```py
 df_titanic['fare'].interpolate(method = 'linear', axis = 0) 
 ```
 
 同时，也可用行值插入
 
-```
+```py
 df_titanic['fare'].interpolate(method = 'linear', axis = 1) 
 ```
 
@@ -348,7 +348,7 @@ df_titanic['fare'].interpolate(method = 'linear', axis = 1)
 
 以下为参考代码示例：
 
-```
+```py
 sex_list = ['MALE', 'FEMALE', np.NaN, 'FEMALE', 'FEMALE', np.NaN, 'MALE']
 df = pd.DataFrame({'SEX': sex_list})
 display(df)
@@ -358,7 +358,7 @@ df = pd.get_dummies(df['SEX'],prefix='IS_SEX')
 display(df) 
 ```
 
-```
+```py
 # 原始数据
  SEX
 0    MALE
@@ -381,7 +381,7 @@ display(df)
 
 当特征值缺失超过 80 % 80\% 80% 以上，建议删除【或加入「是」「否」标记位信息】，容易影响模型效果
 
-```
+```py
 df_titanic.drop(["deck"],axis=1) 
 ```
 
@@ -422,7 +422,7 @@ df_titanic.drop(["deck"],axis=1)
 
 ![机器学习; 数据处理与特征工程; 数据清洗; 异常值处理; 8-23](img/ee1185ee3f09c40ab7856ff3eaba51f3.png)
 
-```
+```py
 sns.catplot(y="fare",x="survived", kind="box", data=df_titanic,palette="Set2") 
 ```
 
@@ -513,7 +513,7 @@ sns.catplot(y="fare",x="survived", kind="box", data=df_titanic,palette="Set2")
 
 在数据处理阶段将离群点作为影响数据质量的异常点考虑，而不是作为通常所说的异常检测目标点，一般采用较为简单直观的方法，结合箱线图和 MAD 的统计方法判断变量的离群点。如下为绘制散点图根据分布直接判断。
 
-```
+```py
 sns.scatterplot(x="fare", y="age", hue="survived",data=df_titanic,palette="Set1") 
 ```
 
@@ -550,7 +550,7 @@ sns.scatterplot(x="fare", y="age", hue="survived",data=df_titanic,palette="Set1"
 
 我们对年龄 age 字段进行进一步处理，考虑到不同的年龄段对应的人群可能获救概率不同，我们根据年龄值分成不同区间段，对应到 child、young、midlife、old 等
 
-```
+```py
 def age_bin(x):
  if x <= 18:
  return 'child'
@@ -570,7 +570,7 @@ array(['young', 'midlife', 'child', 'old'], dtype=object)
 
 我们在 name 字段里，可以看到各种不同的称呼，如「Mr」「Master」「Dr」等，这些称呼体现了乘客的身份等信息，我们可以对其做抽取构建新的特征。
 
-```
+```py
 # 提取称呼
 df_titanic['title'] = df_titanic['name'].map(lambda x: x.split(',')[1].split('.')[0].strip())
 
@@ -579,7 +579,7 @@ df_titanic['title'].value_counts()
 
 执行结果如下：
 
-```
+```py
 Mr              757
 Miss            260
 Mrs             197
@@ -602,14 +602,14 @@ Jonkheer          1
 
 我们做一个简单的「称呼」统计
 
-```
+```py
 # 对称呼细分，是官员，还是皇室，还是女士、先生、小姐
 df_titanic['title'].unique() 
 ```
 
 执行结果：
 
-```
+```py
 array(['Mr', 'Mrs', 'Miss', 'Master', 'Don', 'Rev', 'Dr', 'Mme', 'Ms',
  'Major', 'Lady', 'Sir', 'Mlle', 'Col', 'Capt', 'the Countess',
  'Jonkheer', 'Dona'], dtype=object) 
@@ -617,7 +617,7 @@ array(['Mr', 'Mrs', 'Miss', 'Master', 'Don', 'Rev', 'Dr', 'Mme', 'Ms',
 
 下面我们对这些「称呼」「称谓」做一个规范化统一。
 
-```
+```py
 title_dictionary = {
  "Mr": "Mr",
  "Mrs": "Mrs",
@@ -644,7 +644,7 @@ df_titanic['title'].value_counts()
 
 执行结果如下：
 
-```
+```py
 Mr         757
 Miss       262
 Mrs        201
@@ -657,14 +657,14 @@ Royalty      5
 
 在 Titanic 上，有的成员之间有亲属关系，考虑到家族大小对于最终是否获救也有影响，我们可以构建一个 `family_size` 的特征，用于表征家庭规模。
 
-```
+```py
 df_titanic['family_size'] = df_titanic['sibsp'] + df_titanic['parch'] + 1
 df_titanic['family_size'].head() 
 ```
 
 执行结果如下：
 
-```
+```py
 0    2
 1    2
 2    1
@@ -717,7 +717,7 @@ df_titanic['family_size'].head()
 
 我们先对船票价格做一个等频切分(大家如果对船票价格进行分布绘图，会发现是很长尾的分布，并不适合等距切分)，看看分开的区间段。
 
-```
+```py
 # qcut 等频率分箱
 df_titanic['fare_bin'], bins = pd.qcut(df_titanic['fare'], 5, retbins=True)
 df_titanic['fare_bin'].value_counts() 
@@ -725,7 +725,7 @@ df_titanic['fare_bin'].value_counts()
 
 结果如下：
 
-```
+```py
 (7.854, 10.5]        184
 (21.679, 39.688]     180
 (-0.001, 7.854]      179
@@ -736,7 +736,7 @@ bins #array([  0\.    ,   7.8542,  10.5   ,  21.6792,  39.6875, 512.3292])
 
 下面根据区间段对其进行等频切分
 
-```
+```py
 # 对船票 fare 进行分段分桶
 def fare_cut(fare):
     if fare <=  7.8958:
@@ -754,7 +754,7 @@ df_titanic['fare_bin'] = df_titanic['fare'].map(fare_cut)
 
 相比船票价格，年龄 age 字段的分布更加集中，且区间大小比较明确，我们采用等距切分，代码如下：
 
-```
+```py
 # cut 等距离分箱
 bins = [0, 12, 18, 65, 100]
 pd.cut(df_titanic['age'], bins).value_counts 
@@ -814,14 +814,14 @@ pd.cut(df_titanic['age'], bins).value_counts
 
 在 Titanic 的例子中，如下为数值型特征：
 
-```
+```py
 df_titanic_numerical = df_titanic[['age','sibsp','parch','fare','family_size']]
 df_titanic_numerical.head() 
 ```
 
 我们可以参考下述代码构建多项式特征
 
-```
+```py
 # 扩展数值特征
 from sklearn.preprocessing import PolynomialFeatures
 poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=False)
@@ -833,7 +833,7 @@ pd.DataFrame(df_titanic_numerical_poly, columns=poly.get_feature_names()).head()
 
 在构建完成特征后，我们查看下衍生新特征变量的相关性情况，下面的热力图 heatmap 里颜色越深相关性越大：
 
-```
+```py
 sns.heatmap(pd.DataFrame(df_titanic_numerical_poly, columns=poly.get_feature_names()).corr()) 
 ```
 
@@ -855,7 +855,7 @@ sns.heatmap(pd.DataFrame(df_titanic_numerical_poly, columns=poly.get_feature_nam
 
 标准化操作的参考代码如下：
 
-```
+```py
 from sklearn.preprocessing import StandardScale
 #标准化模型训练
 Stan_scaler = StandardScaler()
@@ -879,7 +879,7 @@ joblib.dump(Stan_scaler,'zscore.m')  #写入文件
 
 下面为幅度缩放操作的参考代码：
 
-```
+```py
 from sklearn import preprocessing
 min_max_scaler = preprocessing.MinMaxScaler()
 min_max_scaler.fit_transform(x)
@@ -927,13 +927,13 @@ y = l o g b ( x ) y=log_{b}(x) y=logb​(x)
 
 下面我们对 Titanic 数据集中的船票价格字段进行 log1p 变换，示例代码如下：
 
-```
+```py
 sns.distplot(df_titanic.fare,kde=False) 
 ```
 
 ![机器学习; 数据处理与特征工程; 特征变换; 非线性变换; 8-46](img/948500b3a5faecb67194784b6f250fb8.png)
 
-```
+```py
 df_titanic['fare_log'] = np.log((1+df_titanic['fare']))
 sns.distplot(df_titanic.fare_log,kde=False) 
 ```
@@ -956,7 +956,7 @@ y ( λ ) = { y λ − 1 λ , λ ≠ 0 ln ⁡ y , λ = 0 y(\lambda)=\left\{\begin
 
 下面我们对 Titanic 数据集中的船票价格字段进行 box-cox 变换，示例代码如下：
 
-```
+```py
 # 从数据分布中移除非零值
 fare_positive_value = df_titanic[(~df_titanic['fare'].isnull()) & (df_titanic['fare']>0)]['fare']
 import scipy.stats as spstats
@@ -987,7 +987,7 @@ sns.distplot(fare_boxcox_lambda_opt,kde=Fal
 
 标签编码的参考代码如下：
 
-```
+```py
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 le.fit(["超一线", "一线", "二线", "三线"])
@@ -1019,7 +1019,7 @@ print('特征标签值反转：{}'.format(list(le.inverse_transform([2, 2, 1])))
 
 如果借助于 pandas 工具库(查看[ShowMeAI](http://www.showmeai.tech/)的 [**数据分析系列教程**](http://www.showmeai.tech/tutorials/33) 和 [**数据科学工具速查 | Pandas 使用指南**](http://www.showmeai.tech/article-detail/101) 进行详细了解)，独热向量编码的 Python 代码参考示例如下：
 
-```
+```py
 sex_list = ['MALE', 'FEMALE', np.NaN, 'FEMALE', 'FEMALE', np.NaN, 'MALE']
 df = pd.DataFrame({'SEX': sex_list})
 display(df)
@@ -1030,7 +1030,7 @@ display(df)
 
 最终变换前后的结果如下：
 
-```
+```py
 # 原始数据
  SEX
 0   MALE
@@ -1053,7 +1053,7 @@ display(df)
 
 下面我们对’sex’, ‘class’, ‘pclass’, ‘embarked’, ‘who’, ‘family_size’, 'age_bin’这些字段都进行独热向量编码。
 
-```
+```py
 pd.get_dummies(df_titanic, columns=['sex', 'class', 'pclass', 'embarked', 'who', 'family_size', 'age_bin'],drop_first=True) 
 ```
 
@@ -1061,7 +1061,7 @@ pd.get_dummies(df_titanic, columns=['sex', 'class', 'pclass', 'embarked', 'who',
 
 当然，我们也可以借助 SKLearn(查看[ShowMeAI](http://www.showmeai.tech/)教程 [**SKLearn 最全应用指南**](http://www.showmeai.tech/article-detail/203) 和 [**AI 建模工具速查 | Scikit-learn 使用指南**](http://www.showmeai.tech/article-detail/108) 详细学习)，进行独热向量编码实现：
 
-```
+```py
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 # 非负整数表示的标签列表
@@ -1077,7 +1077,7 @@ targets = enc.transform(labels).toarray()
 
 输出结果如下：
 
-```
+```py
 array([[ 1.,  0.,  0.],
  [ 0.,  1.,  0.],
  [ 1.,  0.,  0.],
@@ -1090,7 +1090,7 @@ array([[ 1.,  0.,  0.],
 
 示例代码如下：
 
-```
+```py
 from sklearn.preprocessing import LabelBinarizer
 lb=LabelBinarizer()
 labelList=['yes', 'no', 'no', 'yes','no2']
@@ -1104,7 +1104,7 @@ print("yesOrno:",yesORno)
 
 输出如下：
 
-```
+```py
 dummY: [[0 0 1]
  [1 0 0]
  [1 0 0]
@@ -1138,7 +1138,7 @@ yesOrno: ['yes' 'no' 'no' 'yes' 'no2']
 
 这里降维的讲解，我们给大家基于 iris 数据集讲解：
 
-```
+```py
 from sklearn import datasets
 
 iris_data = datasets.load_iris()
@@ -1173,7 +1173,7 @@ draw_result(X, y)
 
 PCA 降维的参考代码实现如下：
 
-```
+```py
 import numpy as np
 from sklearn.decomposition import PCA
 pca = PCA(n_components=2)
@@ -1201,7 +1201,7 @@ u i = A v i σ i u_{i}=\frac{A v_{i}}{\sigma_{i}} ui​=σi​Avi​​
 
 对应的代码参考实现如下：
 
-```
+```py
 from sklearn.decomposition import TruncatedSVD
 iris_2d = TruncatedSVD(2).fit_transform(X)
 draw_result(iris_2d, y) 
@@ -1235,7 +1235,7 @@ A T A = ( X T m ) T X T m = 1 m X X T A^{T} A=\left(\frac{X^{T}}{\sqrt{m}}\right
 
 对应的降维参考实现代码如下：
 
-```
+```py
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 lda = LDA(n_components=2)
 iris_2d = lda.fit_transform(X, y)
@@ -1252,7 +1252,7 @@ PCA 试图寻找到方差最大的正交的主成分分量轴 LDA 发现可以�
 
 T-SNE(t-distributed stochastic neighbor embedding)是一种非线性降维方法，参考的代码实现如下：
 
-```
+```py
 from sklearn.manifold import TSNE
 tsne = TSNE(n_components=2)
 iris_2d = tsne.fit_transform(X)
@@ -1292,7 +1292,7 @@ draw_result(iris_2d, y)
 
 我们会剔除掉方差非常小的字段特征，参考代码实现如下：
 
-```
+```py
 from sklearn.feature_selection import VarianceThreshold
 variancethreshold = VarianceThreshold() #实例化，默认方差为 0.方差<=0 的过滤掉
 df_titanic_numerical = df_titanic[['age','sibsp','parch','fare','family_size']]
@@ -1310,7 +1310,7 @@ p 值和取到这一个统计量的概率取值其实是正相关的： p p p �
 
 如下为卡方过滤的参考代码示例：
 
-```
+```py
 df_titanic_categorical = df_titanic[['sex', 'class', 'embarked', 'who',  'age_bin','adult_male','alone','fare_bin']]
 df_titanic_numerical = df_titanic[['age','sibsp','parch','fare','family_size','pclass']]
 df_titanic_categorical_one_hot = pd.get_dummies(df_titanic_categorical, columns=['sex', 'class', 'embarked', 'who',  'age_bin','adult_male','alone','fare_bin'], drop_first=True)
@@ -1334,7 +1334,7 @@ F F F 检验捕捉线性相关性，要求数据服从正态分布，追求 P P 
 
 其特征选择的参考代码如下：
 
-```
+```py
 from sklearn.feature_selection import f_classif
 f_value, p_value = f_classif(X,y)
 #根据 p 值，得出 k 值
@@ -1349,7 +1349,7 @@ X_classif = SelectKBest(f_classif, k=14).fit_transform(X, y)
 
 其特征选择的参考代码如下：
 
-```
+```py
 from sklearn.feature_selection import mutual_info_classif as MIC
 #互信息法
 mic_result = MIC(X,y)   #互信息量估计
@@ -1363,7 +1363,7 @@ X_mic = SelectKBest(MIC, k=16).fit_transform(X, y)
 
 递归消除删除法使用一个基模型来进行多轮训练，每轮训练后，消除若干权值系数的特征，再基于新的特征集进行下一轮训练。使用`feature_selection` 库的 RFE 类来选择特征的代码如下：
 
-```
+```py
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
 #递归特征消除法，返回特征选择后的数据
@@ -1376,7 +1376,7 @@ X_ref = RFE(estimator=LogisticRegression(), n_features_to_select=10).fit_transfo
 
 我们基于一些模型(如各类树模型)可以得到特征重要度，进而进行筛选
 
-```
+```py
 from sklearn.ensemble import ExtraTreesClassifier
 # 建模与获取特征重要度
 model = ExtraTreesClassifier()
@@ -1399,7 +1399,7 @@ feature.sort_values(by='importances',ascending=False).head(20)
 
 参考代码实现如下：
 
-```
+```py
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -1421,7 +1421,7 @@ eli5.show_weights(perm, feature_names = val_X.columns.tolist())
 
 使用`feature_selection`库的`SelectFromModel`类结合带 L1 惩罚项的逻辑回归模型，来选择特征的代码如下：
 
-```
+```py
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import LogisticRegression
 #带 L1 和 L2 惩罚项的逻辑回归作为基模型的特征选择,这个设置带 L1 惩罚项的逻辑回归作为基模型的特征选择
@@ -1433,7 +1433,7 @@ X_sfm.shape
 
 使用 feature_selection 库的 SelectFromModel 类结合 SVM 模型，来选择特征的代码如下：
 
-```
+```py
 from sklearn.feature_selection import SelectFromModel
 from sklearn.svm import LinearSVC
 lsvc = LinearSVC(C=0.01,penalty='l1',dual=False).fit(X, y)
@@ -1447,7 +1447,7 @@ X_sfm_svm.shape
 
 树模型中 GBDT 也可用来作为基模型进行特征选择，使用 feature_selection 库的 SelectFromModel 类结合 GBDT 模型，来选择特征的代码如下：
 
-```
+```py
 from sklearn.feature_selection import SelectFromModel
 from sklearn.ensemble import GradientBoostingClassifier
 #GBDT 作为基模型的特征选择
@@ -1507,7 +1507,7 @@ X_sfm_gbdt = SelectFromModel(gbdt).fit_transform(X, y)
 
 *   用 N1 和 N2 表示数值特征，用 C1 和 C2 表示类别特征，利用 pandas 的 groupby 操作，可以创造出以下几种有意义的新特征：(其中，C2 还可以是离散化了的 N1)
 
-```
+```py
 median(N1)_by(C1)   中位数
 mean(N1)_by(C1)   算术平均数
 mode(N1)_by(C1)   众数
@@ -1522,7 +1522,7 @@ freq(C2)_by(C1)   频数
 
 *   统计特征可以和线性组合等基础特征工程方法结合(仅用于决策树)，可以得到更多有意义的特征，如：
 
-```
+```py
 N1 - median(N1)_by(C1)
 N1 - mean(N1)_by(C1) 
 ```

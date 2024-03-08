@@ -125,7 +125,7 @@ R M S P E = 1 n ∑ i = 1 n ( y i − y ^ i y i ) 2 = 1 n ∑ i = 1 n ( y ^ i y 
 *   **Step 5： 基准模型与评估**
 *   **Step 6： XGBoost 建模**
 
-```
+```py
 # 载入必要的库
 import pandas as pd
 import numpy as np
@@ -142,7 +142,7 @@ import matplotlib.pyplot as plt
 
 Rossmann 场景建模数据包含很多信息维度，比如客户数量、假期等。又根据其任务目标可以判定为监督学习中典型的回归类建模问题。我们先对加载数据再做后续分析挖掘建模。
 
-```
+```py
 # 载入数据
 train = pd.read_csv('./rossmann-store-sales/train.csv')
 test = pd.read_csv('./rossmann-store-sales/test.csv')
@@ -153,11 +153,11 @@ store = pd.read_csv('./rossmann-store-sales/store.csv')
 
 下图的操作结果显示`test.csv`和`store.csv`中均存在缺失值，我们可以进行相应的预处理。
 
-```
+```py
 train.info(), test.info(), store.info() 
 ```
 
-```
+```py
 <class 'pandas.core.frame.DataFrame'>
 RangeIndex: 1017209 entries, 0 to 1017208
 Data columns (total 9 columns):
@@ -208,7 +208,7 @@ memory usage: 87.2+ KB
 
 我们先对目标结果 sales 做一点分析，先对其进行分布绘图
 
-```
+```py
 train.loc[train.Open==0].Sales.hist(align='left') 
 ```
 
@@ -216,7 +216,7 @@ train.loc[train.Open==0].Sales.hist(align='left')
 
 > 发现：当店铺关闭时，日销量必然为 0。
 
-```
+```py
 fig = plt.figure(figsize=(16,6))
 
 ax1 = fig.add_subplot(121)
@@ -235,7 +235,7 @@ sns.distplot(train.loc[train.Open!=0].Sales)
 print('The skewness of Sales is {}'.format(train.loc[train.Open!=0].Sales.skew())) 
 ```
 
-```
+```py
 The skewness of Sales is 1.5939220392699809 
 ```
 
@@ -245,19 +245,19 @@ The skewness of Sales is 1.5939220392699809
 
 下面我们只采用店铺营业(`Open!=0`)时的数据进行训练。
 
-```
+```py
 train = train.loc[train.Open != 0]
 train = train.loc[train.Sales > 0].reset_index(drop=True)
 train.shape 
 ```
 
-```
+```py
 (844338, 9) 
 ```
 
 # 3\. 缺失值处理
 
-```
+```py
 # 训练集的缺失信息：无缺失
 train[train.isnull().values==True] 
 ```
@@ -265,7 +265,7 @@ train[train.isnull().values==True]
 | Store | DayOfWeek | Date |Sales |Customers |Open |Promo |StateHoliday | SchoolHoliday |
 |–|–|–|–|–|–|–|–|–|–|
 
-```
+```py
 # 测试集的缺失信息
 test[test.isnull().values==True] 
 ```
@@ -286,7 +286,7 @@ test[test.isnull().values==True]
 
 下面我们看一下 store 的缺失情况
 
-```
+```py
 # store 的缺失信息
 msno.matrix(store) 
 ```
@@ -295,7 +295,7 @@ msno.matrix(store)
 
 `test.csv`与`store.csv`中都有缺失值，我们会对其进行处理，并对特征进行合并：
 
-```
+```py
 # 默认 test 中的店铺全部正常营业
 test.fillna(1,inplace=True)
 
@@ -312,13 +312,13 @@ store.fillna(0,inplace=True)
 *   填补缺失值(填入平均值、中位数或者拟合填充等)。
 *   标记缺失值，把缺失值标记为特殊值(比如-999)或者新加一列标注某字段是否是缺失。
 
-```
+```py
 # 特征合并
 train = pd.merge(train, store, on='Store')
 test = pd.merge(test, store, on='Store') 
 ```
 
-```
+```py
 train.head(10) 
 ```
 
@@ -339,7 +339,7 @@ train.head(10)
 
 ## 4.1 特征抽取函数
 
-```
+```py
 def build_features(features, data):
 
     # 直接使用的特征
@@ -388,7 +388,7 @@ def build_features(features, data):
 
 ## 4.2 特征抽取
 
-```
+```py
 # 处理 Date 方便特征提取
 train.Date = pd.to_datetime(train.Date, errors='coerce')
 test.Date = pd.to_datetime(test.Date, errors='coerce')
@@ -404,7 +404,7 @@ build_features([], test)
 print(features) 
 ```
 
-```
+```py
 ['Store', 'CompetitionDistance', 'CompetitionOpenSinceMonth', 'StateHoliday', 'StoreType', 'Assortment', 'SchoolHoliday', 'CompetitionOpenSinceYear', 'Promo', 'Promo2', 'Promo2SinceWeek', 'Promo2SinceYear', 'Year', 'Month', 'Day', 'DayOfWeek', 'WeekOfYear', 'CompetitionOpen', 'PromoOpen', 'IsPromoMonth'] 
 ```
 
@@ -418,7 +418,7 @@ R M S P E = 1 n ∑ i = 1 n ( y i − y ^ i y i ) 2 {\rm RMSPE} = \frac{1}{n}\sq
 
 其中 y i y_i yi​ 与 y ^ i {\hat y}_i y^​i​ 分别为第 i i i 个样本标签的真实值与预测值。
 
-```
+```py
 # 评价函数 Rmspe
 # 参考：https://www.kaggle.com/justdoit/xgboost-in-python-with-rmspe
 
@@ -455,7 +455,7 @@ def neg_rmspe(yhat, y):
 
 大家注意到这里的评估准则为`neg_rmspe`，这是恰当的传入模型调优的评估准则，GridSearchCV 默认找`scoring_fnc`最大的参数，而直接使用 rmspe 指标，其值越小，模型效果越好，因此应该取负，从而`neg_rmspe`值越大，模型精度越好。
 
-```
+```py
 from sklearn.model_selection import GridSearchCV, ShuffleSplit
 from sklearn.metrics import make_scorer
 
@@ -473,12 +473,12 @@ grid = grid.fit(train[features], np.log1p(train.Sales))
 DTR = grid.best_estimator_ 
 ```
 
-```
+```py
 # 显示最佳超参数
 DTR.get_params() 
 ```
 
-```
+```py
 {'criterion': 'mse',
  'max_depth': 30,
  'max_features': None,
@@ -493,7 +493,7 @@ DTR.get_params()
  'splitter': 'best'} 
 ```
 
-```
+```py
 # 生成上传文件
 submission = pd.DataFrame({"Id": test["Id"], "Sales": np.expm1(DTR.predict(test[features]))})
 submission.to_csv("benchmark.csv", index=False) 
@@ -513,7 +513,7 @@ XGBoost 是比较强大的模型，可调参数较多(具体可以参考[ShowMeA
 *   `colsample_bytree`：0-1 之间，用来控制每棵随机采样的特征的占比。
 *   `num_trees`：树的棵树，也就是迭代步数。
 
-```
+```py
 # # 默认的一版参数
 # params = {'objective': 'reg:linear',
 #           'eta': 0.01,
@@ -526,7 +526,7 @@ XGBoost 是比较强大的模型，可调参数较多(具体可以参考[ShowMeA
 # num_trees = 10000 
 ```
 
-```
+```py
 # 第二次调参，学习率过大，效果下降
 # params = {"objective": "reg:linear",
 #           "booster" : "gbtree",
@@ -540,7 +540,7 @@ XGBoost 是比较强大的模型，可调参数较多(具体可以参考[ShowMeA
 # num_trees = 10000 
 ```
 
-```
+```py
 # 第三次调参，步长适中，收敛速度快，结果优
 params = {"objective": "reg:linear",
           "booster" : "gbtree",
@@ -558,7 +558,7 @@ num_trees = 1200
 
 ## 6.2 模型训练
 
-```
+```py
 import numpy as np  # 导入 numpy 包
 from sklearn.model_selection import KFold  # 从 sklearn 导入 KFold 包
 
@@ -580,7 +580,7 @@ def K_Flod_spilt(K,fold,data):
     return  data[train], data[test]  #已经分好块的数据集 
 ```
 
-```
+```py
 # 随机划分训练集与验证集
 from sklearn.model_selection import train_test_split
 
@@ -597,7 +597,7 @@ gbm = xgb.train(params, dtrain, num_trees, evals=watchlist, early_stopping_round
 
 ## 6.3 提交结果文件
 
-```
+```py
 # 生成提交文件
 test_probs = gbm.predict(xgb.DMatrix(test[features]), ntree_limit=gbm.best_ntree_limit)
 indices = test_probs < 0
@@ -610,7 +610,7 @@ submission.to_csv("xgboost.csv", index=False)
 
 在电商类场景中，过往的历史统计特征也非常重要，我们可以通过对历史销量数据，做不同时间粒度的统计构建统计特征作为补充信息，对于建模效果优化也有帮助，如下是一些示例：
 
-```
+```py
 sales_mean_bystore = X_train.groupby(['Store'])['Sales'].mean().reset_index(name='MeanLogSalesByStore')
 sales_mean_bystore['MeanLogSalesByStore'] = np.log1p(sales_mean_bystore['MeanLogSalesByStore'])
 

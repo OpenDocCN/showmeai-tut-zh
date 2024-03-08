@@ -175,7 +175,7 @@ d 12 = ∑ k = 1 n ∣ x 1 k − x 2 k ∣ d_{12} =\sum_{k=1}^{n}{| x_{1k}-x_{2k
 
 **曼哈顿距离的 Python 实现**：
 
-```
+```py
 import numpy as np
 vector1 = np.array([1,2,3])
 vector2 = np.array([4,5,6])
@@ -196,7 +196,7 @@ d 12 = ∑ k = 1 n ( x 1 k − x 2 k ) 2 d_{12} =\sqrt{\sum_{k=1}^{n}{( x_{1k} -
 
 **欧氏距离的 Python 实现**：
 
-```
+```py
 import numpy as np
 vector1 = np.array([1,2,3])
 vector2 = np.array([4,5,6])
@@ -229,7 +229,7 @@ d 12 = m a x ( ∣ x 1 k − x 2 k ∣ ) d_{12} =max( | x_{1k}-x_{2k} |) d12​=
 
 **切比雪夫距离的 Python 实现如下**：
 
-```
+```py
 import numpy as np
 vector1 = np.array([1,2,3])
 vector2 = np.array([4,5,6])
@@ -256,7 +256,7 @@ c o s θ = A B ∣ A ∣ ∣ B ∣ = ∑ k = 1 n x 1 k x 2 k ∑ k = 1 n x 1 k 2
 
 **夹角余弦的 Python 实现**：
 
-```
+```py
 import numpy as np
 vector1 = np.array([1,2,3])
 vector2 = np.array([4,5,6])
@@ -277,7 +277,7 @@ d 12 = ∑ k = 1 n ( x 1 k ⊕ x 2 k ) d_{12} = \sum_{k=1}^{n} \left ( x_{1k} \o
 
 **汉明距离的 Python 实现**：
 
-```
+```py
 import numpy as np
 a=np.array([1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0])
 b=np.array([1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1])
@@ -309,7 +309,7 @@ J σ = 1 − J ( A , B ) = ∣ A ∪ B ∣ − ∣ A ∩ B ∣ ∣ A ∪ B ∣ J
 
 **杰卡德距离的 Python 实现**：
 
-```
+```py
 import numpy as np
 vec1 = np.random.random(10)>0.5
 vec2 = np.random.random(10)>0.5
