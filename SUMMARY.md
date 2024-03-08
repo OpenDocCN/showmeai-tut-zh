@@ -1,0 +1,6 @@
++   [斯坦福 CS224N NLP 课程详解（ShowMeAI）](docs/cs224n/README.md)
++   [斯坦福 CS231n 全套笔记（ShowMeAI）](docs/cs231n/README.md)
++   [图解数据分析（ShowMeAI）](docs/da/README.md)
++   [图解 AI 数学基础（ShowMeAI）](docs/math/README.md)
++   [图解机器学习算法（ShowMeAI）](docs/ml/README.md)
++   [机器学习实战（ShowMeAI）](docs/mlia/README.md)
